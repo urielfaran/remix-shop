@@ -1,9 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form } from "@remix-run/react";
+import { Form, Link } from "@remix-run/react";
 import { Loader2Icon } from "lucide-react";
 import { useRemixForm } from "remix-hook-form";
 import { z } from "zod";
-import { Button } from "~/components/ui/button";
+import { Button, buttonVariants } from "~/components/ui/button";
 import {
   FormField,
   FormItem,
@@ -13,6 +13,8 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { purchaseFormSchema } from "~/schemas/purchaeSchema";
+import CreditCardNumberInput from "../purchase-components/CreditCardNumberInput";
+import CreditCardExpirationInput from "../purchase-components/CreditCardExpirationInput";
 
 export type purchaseFormFields = z.infer<typeof purchaseFormSchema>;
 export const purchaseFormResolver = zodResolver(purchaseFormSchema);
@@ -67,13 +69,7 @@ function PurchaseForm() {
             render={({ field }) => (
               <FormItem id={field.name} className="flex flex-col">
                 <FormLabel>{"credit card number"}</FormLabel>
-                <Input
-                  placeholder="number..."
-                  {...field}
-                  onChange={field.onChange}
-                  className="flex-grow"
-                  value={field.value ? field.value.toString() : ""}
-                />
+                <CreditCardNumberInput field={field} />
                 <FormMessage />
               </FormItem>
             )}
@@ -84,14 +80,7 @@ function PurchaseForm() {
             render={({ field }) => (
               <FormItem id={field.name} className="flex flex-col">
                 <FormLabel>{"credit card expiration"}</FormLabel>
-                <Input
-                  {...field}
-                  placeholder="expiration..."
-                  onChange={field.onChange}
-                  className="flex-grow"
-                  type="password"
-                  value={field.value ? field.value.toString() : ""}
-                />
+                <CreditCardExpirationInput field={field} />
                 <FormMessage />
               </FormItem>
             )}
@@ -107,7 +96,7 @@ function PurchaseForm() {
                   placeholder="cvv..."
                   onChange={field.onChange}
                   className="flex-grow"
-                  type="password"
+                  type="text"
                   value={field.value ? field.value.toString() : ""}
                 />
                 <FormMessage />
@@ -117,19 +106,23 @@ function PurchaseForm() {
           <p className="mt-2 text-xs text-red-500">
             {errors.root?.message ? errors.root.message : null}
           </p>
-
-          <Button disabled={isSubmitting} type="submit">
-            {isSubmitting ? (
-              <span className="flex items-center gap-2">
-                {"purchaseg in"}
-                <span>
-                  <Loader2Icon className="animate-spin" />
+          <div className="flex justify-around">
+            <Button disabled={isSubmitting} type="submit">
+              {isSubmitting ? (
+                <span className="flex items-center gap-2">
+                  {"loading..."}
+                  <span>
+                    <Loader2Icon className="animate-spin" />
+                  </span>
                 </span>
-              </span>
-            ) : (
-              "log-in"
-            )}
-          </Button>
+              ) : (
+                "Buy Now"
+              )}
+            </Button>
+            <Link to={"/"} className={buttonVariants({ variant: "outline" })}>
+              Cancel
+            </Link>
+          </div>
         </Form>
       </ShadForm>
     </>

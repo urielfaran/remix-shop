@@ -12,10 +12,16 @@ import {
   SheetTrigger,
 } from "./ui/sheet";
 import { Link } from "@remix-run/react";
+import useBuylist from "./hooks/useBuylist";
 
 interface NavbarProps extends PropsWithChildren {}
 
 function BuyDrawer({ children }: NavbarProps) {
+  const { buyList } = useBuylist();
+
+  let totalAmount = 0;
+  buyList?.forEach((item) => (totalAmount += item.amount*item.price));
+
   return (
     <Sheet>
       <SheetTrigger asChild>{children}</SheetTrigger>
@@ -29,20 +35,27 @@ function BuyDrawer({ children }: NavbarProps) {
           </SheetDescription>
         </SheetHeader>
         <div className="flex overflow-y-auto min-h-0">
-          <DisplayBuyList />
+          <DisplayBuyList buyList={buyList} />
         </div>
-        <SheetFooter className="p-4 border-t mt-auto border-gray-200 flex justify-between bottom-0">
-          <Link
-            to={"/buy-page"}
-            className={buttonVariants({ className: "flex-1 mx-1" })}
-          >
-            Buy
-          </Link>
-          <SheetClose asChild>
-            <Button variant="outline" className="flex-1 mx-1">
-              Cancel
-            </Button>
-          </SheetClose>
+        <SheetFooter className="p-4 border-t mt-auto border-gray-200 bottom-0">
+          <div className="flex flex-col w-full gap-4">
+            <p className="text-center text-muted-foreground">
+              Total Price: {totalAmount.toFixed(2)}$
+            </p>
+            <div className="flex justify-center">
+              <Link
+                to={"/buy-page"}
+                className={buttonVariants({ className: "flex-1 mx-1" })}
+              >
+                Buy
+              </Link>
+              <SheetClose asChild>
+                <Button variant="outline" className="flex-1 mx-1">
+                  Cancel
+                </Button>
+              </SheetClose>
+            </div>
+          </div>
         </SheetFooter>
       </SheetContent>
     </Sheet>

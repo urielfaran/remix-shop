@@ -14,7 +14,6 @@ import {
   CardTitle,
 } from "../ui/card";
 import { Input } from "../ui/input";
-// import LazyLoad from "react-lazyload";
 
 interface DisplayItemProps {
   product: Product;
@@ -40,13 +39,6 @@ function DisplayItem({ product }: DisplayItemProps) {
           alt={product.name}
           className={`aspect-square`}
         />
-        {/* {loaded ? null : "loading..."}
-        <img
-          ref={imgRef}
-          src={product.image}
-          className={`aspect-square`}
-          alt=""
-        /> */}
       </CardContent>
       <CardHeader>
         <CardTitle>{product.name}</CardTitle>
@@ -85,9 +77,23 @@ function DisplayItem({ product }: DisplayItemProps) {
             readOnly
             hidden
             value={product.name}
-            name="productName"
+            name="name"
+          />
+          <input
+            type="text"
+            readOnly
+            hidden
+            value={product.id}
+            name="id"
           />
           <input type="text" readOnly hidden value={amount} name="amount" />
+          <input
+            type="text"
+            readOnly
+            hidden
+            value={product.price}
+            name="price"
+          />
           <Toaster
             type="submit"
             name="_action"

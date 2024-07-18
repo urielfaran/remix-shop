@@ -2,32 +2,34 @@ import { ActionFunctionArgs, json } from "@remix-run/node";
 import { shoppingListCookie } from "~/utils/cookies.server";
 
 export async function action({ request }: ActionFunctionArgs) {
-  // const _action = await getRequestField("_action", request);
   const body = await request.formData();
   const { _action, ...rest } = Object.fromEntries(body);
-  console.log(_action)
   switch (_action.toString()) {
     case "add": {
-      const { productName, amount } = rest;
+      const { id, amount, price, name } = rest;
 
       // get cookie
       const cookieHeader = request.headers.get("Cookie");
       const cookie = (await shoppingListCookie.parse(cookieHeader)) || {};
-
+      console.log(id, amount, price, name);
       // update buyList
       const filteredBuyList = cookie.buyList
         ? cookie.buyList.filter(
-            (item: { productName: string; amount: number }) =>
-              item.productName !== productName
+            (item: {
+              id: string;
+              name: string;
+              amount: number;
+              price: number;
+            }) => item.id !== id
           )
         : [];
-
-      const newBuyList = [
+        const newBuyList = [
         ...filteredBuyList,
-        { productName, amount: Number(amount) },
+        { id, name, amount: Number(amount), price },
       ];
 
       cookie.buyList = newBuyList;
+      console.log(cookie.buyList)
 
       return json(
         {},
@@ -39,17 +41,21 @@ export async function action({ request }: ActionFunctionArgs) {
       );
     }
     case "remove": {
-      const { productName } = rest;
+      const { id } = rest;
 
-       // get cookie
+      // get cookie
       const cookieHeader = request.headers.get("Cookie");
       const cookie = (await shoppingListCookie.parse(cookieHeader)) || {};
 
       // update buyList
       const newBuyList = cookie.buyList
         ? cookie.buyList.filter(
-            (item: { productName: string; amount: number }) =>
-              item.productName !== productName
+            (item: {
+              id: string;
+              name: string;
+              amount: number;
+              price: number;
+            }) => item.id !== id
           )
         : [];
 

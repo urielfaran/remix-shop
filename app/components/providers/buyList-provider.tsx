@@ -5,7 +5,7 @@ export interface BuyListItem extends Product {
   amount: number;
 }
 
-export type buyListItemType = { productName: string; amount: number };
+export type buyListItemType = { id: string; name: string; amount: number; price: number };
 export type buyListType = buyListItemType[];
 interface BuyListContextType {
   buyList: buyListType;

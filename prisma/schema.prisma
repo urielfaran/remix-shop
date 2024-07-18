@@ -14,16 +14,16 @@ datasource db {
 }
 
 model User {
-  id       String         @id @default(cuid())
-  email    String         @unique
-  password String
-  name     String
-  shoppingList  ShoppingList[]
+  id           String         @id @default(cuid())
+  email        String         @unique
+  password     String
+  name         String
+  shoppingList ShoppingList[]
 }
 
 model Product {
   id            String                @id @default(cuid())
-  name          String                @unique
+  name          String                
   image         String
   price         Int
   shoppingLists ShoppingListProduct[]
@@ -39,20 +39,21 @@ model Category {
 }
 
 model ShoppingList {
-  id       String                @id @default(cuid())
-  products ShoppingListProduct[]
-  user     User                  @relation(fields: [userId], references: [id])
-  userId   String
+  id          String                @id @default(cuid())
+  products    ShoppingListProduct[]
+  user        User                  @relation(fields: [userId], references: [id])
+  userId      String
+  totalAmount Int
 
   @@unique([userId, id])
 }
 
 model ShoppingListProduct {
-  id        String       @id @default(cuid())
+  id             String       @id @default(cuid())
   shoppingList   ShoppingList @relation(fields: [shoppingListId], references: [id])
   shoppingListId String
-  product   Product      @relation(fields: [productId], references: [id])
-  productId String
+  product        Product      @relation(fields: [productId], references: [id])
+  productId    String
 
   @@unique([shoppingListId, productId])
 }

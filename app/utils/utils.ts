@@ -22,21 +22,31 @@ export function setSearchParamsString(
     .join("&");
 }
 
-export async function getRequestField(
-  name: string,
-  request: Request,
-  options: {
-    stringified: boolean;
-  } = {
-    stringified: true,
-  },
-) {
-  // clone the request to get a copy because we have error when trying read the same
-  // request twice and to not modify the original request
-  const requestClone = request.clone();
-  const formData = await requestClone.formData();
+export function isValidMMYYYY(dateStr: string): boolean {
+  // Regular expression to match mm/yyyy format
+  const regex = /^(0[1-9]|1[0-2])\d{2}$/;
 
-  const _action = formData.get(name)?.toString() ?? '';
-  // parse the _action from the form data, parsing is needed because the form data is stringified
-  return options.stringified ? JSON.parse(_action) : _action;
+  // Test the string against the regular expression
+  if (!regex.test(dateStr)) {
+    return false;
+  }
+
+  // Extract the month and year
+  const month = Number(dateStr.slice(0, 2)); // Extracts "12"
+  const year = Number(dateStr.slice(2)); // Extracts "25"
+
+  const currentYear = new Date().getFullYear() % 100;
+  const currentMonth = new Date().getMonth() + 1; // JavaScript months are 0-based
+
+  // Validate the year range
+  if (year < currentYear || year > currentYear + 8) {
+    return false;
+  }
+
+  // If the year is the current year, ensure the month is not in the past
+  if (year === currentYear && month < currentMonth + 3) {
+    return false;
+  }
+
+  return true;
 }

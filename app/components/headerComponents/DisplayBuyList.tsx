@@ -1,25 +1,27 @@
 import { Form } from "@remix-run/react";
-import useBuylist from "../hooks/useBuylist";
+import { buyListType } from "../providers/buyList-provider";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 
-function DisplayBuyList() {
-  const { buyList } = useBuylist();
+interface DisplayBuyListProps {
+  buyList: buyListType;
+}
 
+function DisplayBuyList({ buyList }: DisplayBuyListProps) {
   return (
     <div className="flex flex-wrap gap-6 justify-center p-4 h-full">
-      {buyList?.map(({ amount, productName }) => (
+      {buyList?.map(({ amount, id, name }) => (
         <Card
-          key={productName}
+          key={id}
           className="flex flex-col items-center p-4 rounded-lg shadow-sm size-32"
         >
-          <p className="text-lg font-medium">{productName}</p>
+          <p className="text-lg font-medium">{name}</p>
           <p className="text-sm">Amount: {amount}</p>
           <Form method="post" action="/api/buylist" navigate={false}>
             <input
               type="hidden"
-              name="productName"
-              value={productName}
+              name="id"
+              value={id}
               readOnly
             />
             <Button
